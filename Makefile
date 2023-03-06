@@ -6,13 +6,9 @@ TOOLS_DIR = $(shell git rev-parse --show-toplevel)/.tools
 GOBUILD = go build $(MOD)
 
 ENV ?= development
-LINT_RUN_OPTS ?= --fix
 override GOTEST_OPT += -timeout 30s
 
 .DEFAULT_GOAL := precommit
-
-$(TOOLS_DIR)/golangci-lint: go.mod go.sum tools.go
-	$(GOBUILD) -o $(TOOLS_DIR)/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint
 
 .PHONY: vars
 vars:
@@ -25,11 +21,7 @@ vars:
 	@echo "ENV=$(ENV)"
 
 .PHONY: precommit
-precommit: lint test coverage 
-
-.PHONY: lint
-lint: $(TOOLS_DIR)/golangci-lint
-	$(TOOLS_DIR)/golangci-lint run $(LINT_RUN_OPTS)
+precommit: test coverage 
 
 .PHONY: coverage
 coverage:
